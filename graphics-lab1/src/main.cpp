@@ -118,12 +118,16 @@ void init()
     verts = {{-1, 0}, {1, 0}, {-1, 50}, {1, 50}}; // window frame vert
     pols.push_back(std::make_shared<MyPolygon>(verts, Point{-125, 60}, 0x4b4b4bFF, 0.0f, Point{0, 25}));
     verts = {{0, 0}, {5, 0}, {0, 5}, {5, 5}};
-    for (size_t i = 0; i < 20; ++i)
+
+    for (size_t i = 0; i < 5; ++i)
     {
-        int x = (-640 + (128 * i) % 1280) + subDist(gen), y = (i < 10 ? -250 : -100) + subDist(gen);
         unsigned int color = flowerColors[colorDist(gen)];
-        for (size_t j = 0; j < 10; ++j)
-            pols.push_back(std::make_shared<MyPolygon>(verts, Point{x + subDist(gen), y + subDist(gen)}, color, 45.0f, Point{2.5f, 2.5f}));
+        for (size_t j = 0; j < 127; ++j)
+        {
+            int x = -630 + (10.f / 1) * j;
+            int y = 100 * std::sin(j / 10.f) - 250 + 25 * i;
+            pols.push_back(std::make_shared<MyPolygon>(verts, Point{x, y}, color, 45.0f, Point{2.5f, 2.5f}));
+        }
     }
     bg.push_back(std::make_shared<Image>("resources/background_0.raw", Point{3072, 437}, Point{-122, 25}, 0, Point{1536, 217.5}, Point{1280.0f / 1024, 1}));
     bg.push_back(std::make_shared<Image>("resources/background_1.raw", Point{3072, 535}, Point{166, -25}, 0, Point{1536, 266.5}, Point{1280.0f / 1024, 1}));
@@ -177,6 +181,7 @@ int main(int argc, char **argv)
 
     init();
     glutDisplayFunc(tick);
+    // glutReshapeFunc(reshape);
     glutMainLoop();
     return 0;
 }

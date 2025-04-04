@@ -9,6 +9,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin)
 
 find_package(OpenGL REQUIRED)
+find_package(GLU REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -21,7 +22,7 @@ file(GLOB_RECURSE sources src/*.cpp)
 
 add_executable(${PROJECT_NAME} ${sources})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL freeglut)
+target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL OpenGL::GLU freeglut)
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${freeglut_SOURCE_DIR}/include)
 
