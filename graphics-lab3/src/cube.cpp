@@ -3,58 +3,55 @@
 #include "texture.h"
 #include "camera.h"
 
-Cube::Cube(const std::vector<std::string> &textureNames)
+Cube::Cube(const std::string &textureName)
 {
     initGeometry();
-    for (const auto &texName : textureNames)
-    {
-        textures.push_back(Texture::get(texName));
-    }
+    cubemapTexture = Texture::get(textureName);
     initShaders();
 }
 
 void Cube::initGeometry()
 {
+
     GLfloat vertices[] = {
-        // positions          // texture coordinates
-        -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, // Front face
-        1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
 
-        -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, // Back face
-        -1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
-        1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
 
-        -1.0f, 1.0f, -1.0f, 0.0f, 1.0f, // Top face
-        -1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-        1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
 
-        -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, // Bottom face
-        1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
-        1.0f, -1.0f, 1.0f, 1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f,
 
-        1.0f, -1.0f, -1.0f, 0.0f, 0.0f, // Right face
-        1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
 
-        -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, // Left face
-        -1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
-        -1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, -1.0f, 0.0f, 1.0f};
+        1.0f, -1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, -1.0f};
 
     GLuint indices[] = {
-        0, 1, 2, 2, 3, 0,       // Front face
-        4, 5, 6, 6, 7, 4,       // Back face
-        8, 9, 10, 10, 11, 8,    // Top face
-        12, 13, 14, 14, 15, 12, // Bottom face
-        16, 17, 18, 18, 19, 16, // Right face
-        20, 21, 22, 22, 23, 20  // Left face
-    };
+        0, 1, 2, 2, 3, 0,
+        4, 5, 6, 6, 7, 4,
+        8, 9, 10, 10, 11, 8,
+        12, 13, 14, 14, 15, 12,
+        16, 17, 18, 18, 19, 16,
+        20, 21, 22, 22, 23, 20};
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -68,11 +65,8 @@ void Cube::initGeometry()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid *)0);
     glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
 }
@@ -142,21 +136,17 @@ void Cube::draw()
     GLint projectionLoc = glGetUniformLocation(this->shader, "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(Camera::getProjection()));
 
-    for (GLuint i = 0; i < textures.size(); i++)
-    {
-        glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, textures[i]);
-
-        std::string textureName = "texture" + std::to_string(i + 1);
-        GLuint textureLoc = glGetUniformLocation(this->shader, textureName.c_str());
-        glUniform1i(textureLoc, i);
-    }
-
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-
+    model = glm::translate(model, transform.position);
+    model = glm::scale(model, transform.scale);
+    // model = glm::rotate(model, transform.rotation);
     GLint modelLoc = glGetUniformLocation(this->shader, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+    GLint cubemapLoc = glGetUniformLocation(this->shader, "cubemap");
+    glUniform1i(cubemapLoc, 0);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);

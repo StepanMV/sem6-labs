@@ -1,4 +1,5 @@
 #define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -10,6 +11,7 @@
 #include "camera.h"
 #include "keyboard.h"
 #include "defines.h"
+#include "texture.h"
 
 Cube *cube;
 GLuint shaderProgram;
@@ -27,13 +29,21 @@ void renderScene()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    cube->draw(shaderProgram, Camera::getView(), Camera::getProjection());
+    cube->draw();
+    // cube->transform.position = Camera::transform.position;
 }
 
 void myinit()
 {
-    cube = new Cube({"sky0", "sky1"});
-    shaderProgram = cube->loadShaders("resources/shaders/texture.vert", "resources/shaders/texture.frag");
+    Texture::loadCubemap("sky", {"resources/textures/sky0.png",
+                                 "resources/textures/sky1.png",
+                                 "resources/textures/sky2.png",
+                                 "resources/textures/sky3.png",
+                                 "resources/textures/sky4.png",
+                                 "resources/textures/sky5.png"});
+    // Texture::loadTexture("sky", "resources/textures/sky0.png");
+    cube = new Cube("sky");
+    cube->transform.scale *= 1;
 }
 
 int main()

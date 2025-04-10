@@ -2,11 +2,14 @@
 
 out vec4 FragColor;
 
-in vec2 TexCoord;
+in vec3 FragPos; 
 
-uniform sampler2D texture1;
+uniform samplerCube cubemap; 
 
 void main()
 {
-    FragColor = texture(texture1, TexCoord);
+    vec3 viewDir = normalize(FragPos);
+    
+    // FragColor = texture(cubemap, viewDir);
+    FragColor = vec4(tan(viewDir * 10), 0.33);
 }

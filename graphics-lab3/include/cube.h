@@ -1,3 +1,5 @@
+#pragma once
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <vector>
@@ -13,17 +15,18 @@
 class Cube
 {
 public:
-    Cube(const std::vector<std::string> &textureNames);
+    Cube(const std::string &textureName);
 
     void draw();
+    
+    Transform transform;
 
 private:
     void initGeometry();
     void initShaders();
     GLuint loadShader(const char *filepath, GLenum shaderType);
 
-    Transform transform;
     GLuint VAO, VBO, EBO;
     GLuint shader;
-    std::vector<GLuint> textures;
+    GLuint cubemapTexture;
 };
